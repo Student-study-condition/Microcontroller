@@ -130,67 +130,11 @@ Serial.println(sound_value_db);
 client.loop();
 // send temperature data to ibm cloud
 
- String payload = "{\"d\":{\"Name\":\"" DEVICE_ID "\"";
-              payload += ",\"temperature\":";
-              payload += temperature;
-              payload += "}}";
-       
-        Serial.print("Sending payload: ");
-        Serial.println(payload);
+  sendData(temperature, humidity, illuminance, sound_value_db);
 
-        if (client.publish(pubTopic1, (char*) payload.c_str())) {
-            Serial.println("Publish ok");
-        } else {
-            Serial.println("Publish failed");
-        }
-        
-// send humidity data to ibm cloud
-
-String payload1 = "{\"d\":{\"Name\":\"" DEVICE_ID "\"";
-              payload1 += ",\"humidity\":";
-              payload1 += humidity;
-              payload1 += "}}";
-       
-        Serial.print("Sending payload: ");
-        Serial.println(payload1);
-
-        if (client.publish(pubTopic2, (char*) payload1.c_str())) {
-            Serial.println("Publish ok");
-        } else {
-            Serial.println("Publish failed");
-        }
-
-// send illuminance data to ibm cloud
-String payload2 = "{\"d\":{\"Name\":\"" DEVICE_ID "\"";
-              payload2 += ",\"illuminance\":";
-              payload2 += illuminance;
-              payload2 += "}}";
-       
-        Serial.print("Sending payload: ");
-        Serial.println(payload2);
-
-        if (client.publish(pubTopic3, (char*) payload2.c_str())) {
-            Serial.println("Publish ok");
-        } else {
-            Serial.println("Publish failed");
-        }
-// send sound value data to ibm cloud
- String payload3 = "{\"d\":{\"Name\":\"" DEVICE_ID "\"";
-              payload3 += ",\"sound_value_db\":";
-              payload3 += sound_value_db;
-              payload3 += "}}";
-       
-        Serial.print("Sending payload: ");
-        Serial.println(payload3);
-
-        if (client.publish(pubTopic4, (char*) payload3.c_str())) {
-            Serial.println("Publish ok");
-        } else {
-            Serial.println("Publish failed");
-        }
  
- // wait 1 second to print again
- delay(1000);
+ // wait 5 second to print again
+ delay(5000);
 }
 
 void printWifiData() {
@@ -241,4 +185,31 @@ void printMacAddress(byte mac[]) {
     }
   }
   Serial.println();
+}
+
+//send user data to the cloud
+void sendData(float temperature, float humidity, float illuminance, float sound) {
+  // send illuminance data to ibm cloud
+String payload = "{\"d\":{\"Name\":\"" DEVICE_ID "\"";
+              //add params to json
+              payload += ",\"temperature\":";
+              payload += temperature;
+              payload += ",\"humidity\":";
+              payload += humidity;
+              payload += ",\"illuminance\":";
+              payload += illuminance;
+              payload += ",\"sound\":";
+              payload += sound;
+              // add timestamp
+              
+              payload += "}}";
+       
+        Serial.print("Sending payload: ");
+        Serial.println(payload);
+
+        if (client.publish(pubTopic1, (char*) payload.c_str())) {
+            Serial.println("Publish ok");
+        } else {
+            Serial.println("Publish failed");
+        }
 }
